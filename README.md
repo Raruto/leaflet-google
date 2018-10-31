@@ -1,6 +1,8 @@
 # leaflet-google
 A Leaflet plugin that allows easy integration with the Google Maps API
 
+_For a working example (without API Key) see [here](https://raruto.github.io/examples/leaflet-google/leaflet-google.html)_
+
 ---
 
 [![Leaflet+Google Logos](https://raw.githubusercontent.com/Raruto/raruto.github.io/master/img/leaflet-google.jpg)](https://raruto.github.io)
