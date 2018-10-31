@@ -43,7 +43,7 @@ _For a working example (without API Key) see [here](https://raruto.github.io/exa
 
       var zoomControl = new L.Control.Zoom({ position: 'topright' });
 
-      var ggl = new L.Google('ROADMAP');
+      var ggl = new L.Google('ROADMAP'); // Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
 
       var url = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
         attr =
