@@ -71,4 +71,8 @@ _**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control�
 
 ---
 
+**Working and tested until:** leaflet@1.3.2, gmaps@3.34
+
+---
+
 **Contributors:** [Bencevans](https://gist.github.com/bencevans/4504864), [Crofty](https://gist.github.com/crofty/2197042), [Raruto](https://github.com/Raruto/leaflet-google)
