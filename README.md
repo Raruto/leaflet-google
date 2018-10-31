@@ -3,7 +3,7 @@ A Leaflet plugin that allows easy integration with the Google Maps API
 
 _For a working example (without API Key) see [here](https://raruto.github.io/examples/leaflet-google/leaflet-google.html)_
 
-_**NB** to be able to use the pegamen control (a.k.a. “street view”) you MUST insert a valid Google Maps API Key.
+_**NB** to be able to use the pegamen control (a.k.a. “street view”) you MUST insert a valid Google Maps API Key._
 
 ---
 
