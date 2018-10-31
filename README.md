@@ -71,7 +71,7 @@ _**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control�
 
 ---
 
-**Working and tested until:** leaflet@1.3.2, gmaps@3.34
+**Compatibile with:** leaflet@1.3.2, gmaps@3.34
 
 ---
 
