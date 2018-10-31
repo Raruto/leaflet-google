@@ -3,8 +3,6 @@ A Leaflet plugin that allows easy integration with the Google Maps API
 
 _For a working example (without API Key) see [here](https://raruto.github.io/examples/leaflet-google/leaflet-google.html)_
 
-_**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control”) you **MUST** insert a valid Google Maps API Key._
-
 ---
 
 [![Leaflet+Google Logos](https://raw.githubusercontent.com/Raruto/raruto.github.io/master/img/leaflet-google.jpg)](https://raruto.github.io)
@@ -68,6 +66,8 @@ _**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control�
       map.addLayer(ggl);
     </script>
     ```
+
+_**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control”) you **MUST** use a valid Google Maps API Key._
 
 ---
 
