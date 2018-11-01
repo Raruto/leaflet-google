@@ -67,7 +67,7 @@ _For a working example (without API Key) see [here](https://raruto.github.io/exa
     </script>
     ```
 
-_**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control”) you **MUST** use a valid Google Maps API Key._
+_**NB** to be able to use the “pegamen man” (a.k.a. “Street View Control”) you **MUST** use a valid [Google Maps API Key](https://developers.google.com/maps/documentation/javascript/get-api-key)._
 
 ---
 
