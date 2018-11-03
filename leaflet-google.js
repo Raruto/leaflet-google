@@ -1,6 +1,6 @@
 /**
  * Add Google as Leaflet layer for API integration.
- * 
+ *
  * @author Bencevans, Crofty, Raruto
  *
  * @link https://gist.github.com/bencevans/4504864
@@ -156,6 +156,17 @@ L.Google = (L.Layer || L.Class).extend({
 				_this._pegamenFix();
 			}
 		);
+
+		var panorama = map.getStreetView();
+		if (panorama) {
+			google.maps.event.addListener(panorama, 'visible_changed', function() {
+				if (panorama.getVisible()) {
+					_this._map._container.classList.add("google-streetview-enabled");
+				} else {
+					_this._map._container.classList.remove("google-streetview-enabled");
+				}
+			});
+		}
 	},
 
 	_checkZoomLevels: function() {
