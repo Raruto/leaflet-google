@@ -1,6 +1,6 @@
 /**
  * Add Google as Leaflet layer for API integration.
- * 
+ *
  * @author Bencevans, Crofty, Raruto
  *
  * @link https://gist.github.com/bencevans/4504864
@@ -64,7 +64,7 @@ L.Google = (L.Layer || L.Class).extend({
 		map.on('viewreset', this._resetCallback, this);
 
 		this._limitedUpdate = L.Util.limitExecByInterval ? L.Util.limitExecByInterval(this._update, 150, this) : L.Util.throttle(this._update, 150, this);
-		map.on('move', this._update, this);
+		map.on('move drag zoomend', this._update, this);
 
 		map.on('zoomanim', this._handleZoomAnim, this);
 
@@ -82,7 +82,7 @@ L.Google = (L.Layer || L.Class).extend({
 
 		this._map.off('viewreset', this._resetCallback, this);
 
-		this._map.off('move', this._update, this);
+		this._map.off('move drag zoomend', this._update, this);
 
 		this._map.off('zoomanim', this._handleZoomAnim, this);
 
@@ -156,6 +156,17 @@ L.Google = (L.Layer || L.Class).extend({
 				_this._pegamenFix();
 			}
 		);
+
+		var panorama = map.getStreetView();
+		if (panorama) {
+			google.maps.event.addListener(panorama, 'visible_changed', function() {
+				if (panorama.getVisible()) {
+					_this._map._container.classList.add("google-streetview-enabled");
+				} else {
+					_this._map._container.classList.remove("google-streetview-enabled");
+				}
+			});
+		}
 	},
 
 	_checkZoomLevels: function() {
