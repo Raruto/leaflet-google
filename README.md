@@ -5,7 +5,7 @@ _For a working example (without API Key) see [demo](https://raruto.github.io/exa
 
 ---
 
-[![Leaflet+Google Logos](https://raw.githubusercontent.com/Raruto/raruto.github.io/master/img/leaflet-google.jpg)](https://raruto.github.io)
+[![Leaflet+Google Logos](https://raruto.github.io/img/leaflet-google.jpg)](https://raruto.github.io)
 
 > _Initally based on the [work](http://matchingnotes.com/using-google-map-tiles-with-leaflet) of **James “Crofty” Croft**_
 
