@@ -70,7 +70,9 @@ L.Google = (L.Layer || L.Class).extend({
 
 		//20px instead of 1em to avoid a slight overlap with google's attribution
 		//map._controlCorners['bottomright'].style.marginBottom = "20px";
-		map._controlCorners["bottomright"].querySelector(".leaflet-control-attribution").style.display = "none";
+		if (map.options.attributionControl && map.attributionControl) {
+			map.attributionControl._container.style.display = "none";
+		}
 
 		this._reset();
 		this._update();
@@ -87,7 +89,10 @@ L.Google = (L.Layer || L.Class).extend({
 		this._map.off('zoomanim', this._handleZoomAnim, this);
 
 		//map._controlCorners['bottomright'].style.marginBottom = "0em";
-		map._controlCorners["bottomright"].querySelector(".leaflet-control-attribution").style.display = "";
+		if (map.options.attributionControl && map.attributionControl) {
+			map.attributionControl._container.style.display = "";
+		}
+
 		//this._map.off('moveend', this._update, this);
 	},
 
