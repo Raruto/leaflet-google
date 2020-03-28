@@ -18,7 +18,7 @@ _For a working example (without API Key) see [demo](https://raruto.github.io/exa
     <style> html, body, #map { height: 100%; width: 100%; padding: 0; margin: 0; } </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet-src.js"></script>
-    <script src="https://raruto.github.io/cdn/leaflet-google/0.0.1/leaflet-google.js"></script>
+    <script src="https://raruto.github.io/cdn/leaflet-google/0.0.3/leaflet-google.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=<INSERT_HERE_API_KEY>"></script>
     ...
     </head>
