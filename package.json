@@ -2,16 +2,21 @@
   "name": "leaflet-google",
   "version": "0.0.3",
   "description": "LeafletJS plugin that integrates with the Google Maps API",
-  "devDependencies": {
-    "grunt": "~0.4",
-    "grunt-contrib-uglify": "~0.3",
-    "grunt-contrib-concat": "~0.3",
-    "grunt-contrib-clean": "~0.5",
-    "grunt-contrib-cssmin": "~0.8",
-    "grunt-contrib-jshint": "~0.8",
+  "main": "leaflet-google.js",
+  "scripts": {
+    "build": "esbuild leaflet-google.js --minify --outfile=leaflet-google.min.js",
+    "dev": "node build/dev.js",
+    "test": "npm run build && cucumber-js",
+    "version": "npm run build && git add -A",
+    "postversion": "git push --follow-tags && node build/publish.js"
   },
-  "browserDependencies": {
-    "leaflet": "~0.7",
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.3.0",
+    "esbuild": "^0.28.2",
+    "playwright": "1.64.1"
+  },
+  "peerDependencies": {
+    "leaflet": "^1.9.4 || ^2.0.0-beta.3"
   },
   "repository": {
     "type": "git",
@@ -27,6 +32,6 @@
   "homepage": "http://github.com/Raruto/leaflet-google/",
   "license": "GPL-2.0-or-later",
   "bugs": {
-    "url": "https://github.com/Raruto/Leaflet.Elevation/issues"
+    "url": "https://github.com/Raruto/leaflet-google/issues"
   }
 }

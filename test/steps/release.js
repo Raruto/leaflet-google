@@ -1,0 +1,60 @@
+const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
+const { copyFileSync, mkdtempSync, mkdirSync, rmSync, writeFileSync, readFileSync } = require('node:fs');
+const { tmpdir } = require('node:os');
+const path = require('node:path');
+const { Then } = require('@cucumber/cucumber');
+
+Then('npm version builds and pushes a tag and CDN files without npm authentication', function () {
+  const root = mkdtempSync(path.join(tmpdir(), 'leaflet-release-'));
+  try {
+    const work = path.join(root, 'work');
+    const remote = path.join(root, 'remote.git');
+    const cdnRemote = path.join(root, 'cdn.git');
+    const cdnSeed = path.join(root, 'cdn-seed');
+    mkdirSync(work);
+    mkdirSync(cdnSeed);
+    const manifest = JSON.parse(readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf8'));
+    manifest.version = '1.0.0';
+    manifest.scripts.build = 'node build.js';
+    writeFileSync(path.join(work, 'package.json'), JSON.stringify(manifest));
+    writeFileSync(path.join(work, 'build.js'), "require('node:fs').writeFileSync('leaflet-google.min.js', 'minified')");
+    writeFileSync(path.join(work, 'leaflet-google.js'), 'source');
+    mkdirSync(path.join(work, 'build'));
+    copyFileSync(path.join(__dirname, '..', '..', 'build', 'publish.js'), path.join(work, 'build', 'publish.js'));
+    const git = (...args) => execFileSync('git', args, { cwd: work, stdio: 'pipe', encoding: 'utf8' }).trim();
+    git('init', '-q', '--bare', remote);
+    git('init', '-q', '--bare', cdnRemote);
+    execFileSync('git', ['init', '-q'], { cwd: cdnSeed });
+    writeFileSync(path.join(cdnSeed, 'README.md'), 'CDN');
+    execFileSync('git', ['add', 'README.md'], { cwd: cdnSeed });
+    execFileSync('git', ['-c', 'user.name=Release test', '-c', 'user.email=release-test@example.invalid', 'commit', '-qm', 'Initial commit'], { cwd: cdnSeed });
+    execFileSync('git', ['remote', 'add', 'origin', cdnRemote], { cwd: cdnSeed });
+    execFileSync('git', ['push', '-q', 'origin', 'HEAD'], { cwd: cdnSeed });
+    git('init', '-q');
+    git('config', 'user.name', 'Release test');
+    git('config', 'user.email', 'release-test@example.invalid');
+    git('remote', 'add', 'origin', remote);
+    git('add', 'package.json', 'build.js', 'build', 'leaflet-google.js');
+    git('commit', '-qm', 'Initial commit');
+    git('push', '-u', 'origin', 'HEAD');
+    const npm = process.env.npm_execpath;
+    assert.ok(npm, 'Run the test through npm test');
+    const gitConfig = path.join(root, 'gitconfig');
+    writeFileSync(gitConfig, `[url "${cdnRemote.replace(/\\/g, '/')}"]\n\tinsteadOf = https://github.com/Raruto/raruto.github.io.git\n`);
+    const env = { ...process.env, GIT_CONFIG_GLOBAL: gitConfig, npm_config_offline: 'true', npm_config_userconfig: path.join(root, 'npmrc') };
+    execFileSync(process.execPath, [npm, 'version', 'patch'], { cwd: work, env, stdio: 'pipe' });
+    assert.equal(readFileSync(path.join(work, 'leaflet-google.min.js'), 'utf8'), 'minified');
+    assert.equal(JSON.parse(readFileSync(path.join(work, 'package.json'), 'utf8')).version, '1.0.1');
+    assert.equal(git('--git-dir', remote, 'rev-parse', 'refs/tags/v1.0.1^{}'), git('rev-parse', 'HEAD'));
+    assert.equal(git('--git-dir', remote, 'rev-parse', 'HEAD'), git('rev-parse', 'HEAD'));
+    assert.equal(git('--git-dir', cdnRemote, 'show', 'HEAD:cdn/leaflet-google/1.0.1/leaflet-google.js'), 'source');
+    assert.equal(git('--git-dir', cdnRemote, 'show', 'HEAD:cdn/leaflet-google/1.0.1/leaflet-google.min.js'), 'minified');
+    const cdnCommit = git('--git-dir', cdnRemote, 'rev-parse', 'HEAD');
+    writeFileSync(path.join(work, 'leaflet-google.js'), 'unreleased change');
+    execFileSync(process.execPath, ['build/publish.js'], { cwd: work, env, stdio: 'pipe' });
+    assert.equal(git('--git-dir', cdnRemote, 'rev-parse', 'HEAD'), cdnCommit);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

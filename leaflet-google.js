@@ -8,9 +8,8 @@
  * @link https://github.com/Raruto/leaflet-google
  */
 
-L.Google = (L.Layer || L.Class).extend({
-	includes: L.Evented ? L.Evented.prototype : L.Mixin.Events,
-
+(function() {
+const googleLayerMethods = {
 	options: {
 		minZoom: 0,
 		maxZoom: 18,
@@ -27,17 +26,17 @@ L.Google = (L.Layer || L.Class).extend({
 	},
 
 	// Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
-	initialize: function(type, options) {
+	_initializeGoogle(type, options) {
 		L.Util.setOptions(this, options);
 
-		this._ready = google.maps.Map != undefined;
+		this._ready = !!(window.google && window.google.maps && window.google.maps.Map);
 		if (!this._ready) L.Google.asyncWait.push(this);
 
 		this._type = type || 'SATELLITE';
 
 		this._GAPIPromise = this._ready ? Promise.resolve(window.google) : new Promise(function(resolve, reject) {
-			var checkCounter = 0;
-			var intervalId = null;
+			let checkCounter = 0;
+			let intervalId = null;
 			intervalId = setInterval(function() {
 				if (checkCounter >= 10) {
 					clearInterval(intervalId);
@@ -52,7 +51,7 @@ L.Google = (L.Layer || L.Class).extend({
 		});
 	},
 
-	onAdd: function(map, insertAtTheBottom) {
+	onAdd(map, insertAtTheBottom) {
 		this._map = map;
 		this._insertAtTheBottom = insertAtTheBottom;
 
@@ -78,7 +77,7 @@ L.Google = (L.Layer || L.Class).extend({
 		this._update();
 	},
 
-	onRemove: function(map) {
+	onRemove(map) {
 		this._map._container.removeChild(this._container);
 		//this._container = null;
 
@@ -96,24 +95,23 @@ L.Google = (L.Layer || L.Class).extend({
 		//this._map.off('moveend', this._update, this);
 	},
 
-	getAttribution: function() {
+	getAttribution() {
 		return this.options.attribution;
 	},
 
-	setOpacity: function(opacity) {
+	setOpacity(opacity) {
 		this.options.opacity = opacity;
-		if (opacity < 1) {
-			L.DomUtil.setOpacity(this._container, opacity);
-		}
+		if (this._container) this._container.style.opacity = opacity;
+		return this;
 	},
 
-	setElementSize: function(e, size) {
+	setElementSize(e, size) {
 		e.style.width = size.x + "px";
 		e.style.height = size.y + "px";
 	},
 
-	_initContainer: function() {
-		var tilePane = this._map._container,
+	_initContainer() {
+		const tilePane = this._map._container,
 			first = tilePane.firstChild;
 
 		if (!this._container) {
@@ -128,10 +126,10 @@ L.Google = (L.Layer || L.Class).extend({
 		this.setElementSize(this._container, this._map.getSize());
 	},
 
-	_initMapObject: function() {
+	_initMapObject() {
 		if (!this._ready) return;
 		this._google_center = new google.maps.LatLng(0, 0);
-		var map = new google.maps.Map(this._container, {
+		const map = new google.maps.Map(this._container, {
 			center: this._google_center,
 			zoom: 0,
 			tilt: 0,
@@ -148,7 +146,7 @@ L.Google = (L.Layer || L.Class).extend({
 			//backgroundColor: this.options.mapOptions.backgroundColor
 		});
 
-		var _this = this;
+		const _this = this;
 		// this._reposition = google.maps.event.addListenerOnce(map, "center_changed",
 		// 	function() {
 		// 		_this.onReposition();
@@ -162,7 +160,7 @@ L.Google = (L.Layer || L.Class).extend({
 			}
 		);
 
-		var panorama = map.getStreetView();
+		const panorama = map.getStreetView();
 		if (panorama) {
 			google.maps.event.addListener(panorama, 'visible_changed', function() {
 				if (panorama.getVisible()) {
@@ -174,7 +172,7 @@ L.Google = (L.Layer || L.Class).extend({
 		}
 	},
 
-	_checkZoomLevels: function() {
+	_checkZoomLevels() {
 		//setting the zoom level on the Google map may result in a different zoom level than the one requested
 		//(it won't go beyond the level for which they have data).
 		// verify and make sure the zoom levels on both Leaflet and Google maps are consistent
@@ -184,10 +182,10 @@ L.Google = (L.Layer || L.Class).extend({
 		}
 	},
 
-	_pegamenFix: function() {
-		var _this = this;
-		var checkExist = setInterval(function() {
-			var pegamenDiv = document.querySelector('.gm-svpc')
+	_pegamenFix() {
+		const _this = this;
+		const checkExist = setInterval(function() {
+			const pegamenDiv = document.querySelector('.gm-svpc')
 			if (pegamenDiv) {
 				// Disable dragging when user's cursor enters the element
 				pegamenDiv.addEventListener('mouseover', function() {
@@ -203,20 +201,20 @@ L.Google = (L.Layer || L.Class).extend({
 		}, 100); // check every 100ms
 	},
 
-	_resetCallback: function(e) {
+	_resetCallback(e) {
 		this._reset(e.hard);
 	},
 
-	_reset: function(clearOldContainer) {
+	_reset(clearOldContainer) {
 		this._initContainer();
 	},
 
-	_update: function(e) {
+	_update(e) {
 		if (!this._google) return;
 		this._resize();
 
-		var center = e && e.latlng ? e.latlng : this._map.getCenter();
-		var _center = new google.maps.LatLng(center.lat, center.lng);
+		const center = e && e.latlng ? e.latlng : this._map.getCenter();
+		const _center = new google.maps.LatLng(center.lat, center.lng);
 
 		this._google.setCenter(_center);
 		this._google.setZoom(this._map.getZoom());
@@ -225,8 +223,8 @@ L.Google = (L.Layer || L.Class).extend({
 		//this._google.fitBounds(google_bounds);
 	},
 
-	_resize: function() {
-		var size = this._map.getSize();
+	_resize() {
+		const size = this._map.getSize();
 		if (this._container.style.width == size.x &&
 			this._container.style.height == size.y)
 			return;
@@ -235,26 +233,40 @@ L.Google = (L.Layer || L.Class).extend({
 	},
 
 
-	_handleZoomAnim: function(e) {
-		var center = e.center;
-		var _center = new google.maps.LatLng(center.lat, center.lng);
+	_handleZoomAnim(e) {
+		if (!this._google) return;
+		const center = e.center;
+		const _center = new google.maps.LatLng(center.lat, center.lng);
 
 		this._google.setCenter(_center);
 		this._google.setZoom(e.zoom);
 	},
 
 
-	onReposition: function() {
+	onReposition() {
 		if (!this._google) return;
 		google.maps.event.trigger(this._google, "resize");
 	}
-});
+};
+
+if (L.version.startsWith('1.')) {
+	googleLayerMethods.initialize = googleLayerMethods._initializeGoogle;
+	L.Google = L.Layer.extend(googleLayerMethods);
+} else {
+	L.Google = class extends L.Layer {
+		constructor(type, options) {
+			super();
+			this._initializeGoogle(type, options);
+		}
+	};
+	L.Google.include(googleLayerMethods);
+}
 
 L.Google.asyncWait = [];
 L.Google.asyncInitialize = function() {
-	var i;
+	let i;
 	for (i = 0; i < L.Google.asyncWait.length; i++) {
-		var o = L.Google.asyncWait[i];
+		const o = L.Google.asyncWait[i];
 		o._ready = true;
 		if (o._container) {
 			o._initMapObject();
@@ -263,3 +275,4 @@ L.Google.asyncInitialize = function() {
 	}
 	L.Google.asyncWait = [];
 };
+})();

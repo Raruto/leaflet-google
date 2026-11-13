@@ -1,4 +1,8 @@
 # leaflet-google.js
+
+[![GitHub release](https://img.shields.io/github/v/release/Raruto/leaflet-google)](https://github.com/Raruto/leaflet-google/releases)
+[![License](https://img.shields.io/badge/license-GPL%202-blue.svg?style=flat)](LICENSE)
+
 A Leaflet plugin that allows easy integration with the Google Maps API
 
 _For a working example (without API Key) see [demo](https://raruto.github.io/examples/leaflet-google/leaflet-google.html)_
@@ -16,9 +20,9 @@ _For a working example (without API Key) see [demo](https://raruto.github.io/exa
     <head>
     ...
     <style> html, body, #map { height: 100%; width: 100%; padding: 0; margin: 0; } </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet-src.js"></script>
-    <script src="https://raruto.github.io/cdn/leaflet-google/0.0.3/leaflet-google.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Raruto/leaflet-google@master/leaflet-google.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=<INSERT_HERE_API_KEY>"></script>
     ...
     </head>
@@ -34,18 +38,19 @@ _For a working example (without API Key) see [demo](https://raruto.github.io/exa
 3. **create your first simple “leaflet-google” slippy map**
     ```html
     <script>
-      var map = new L.Map('map', {
+    {
+      const map = new L.Map('map', {
         center: [41.4583, 12.7059],
         zoom: 5,
         markerZoomAnimation: false,
         zoomControl: false
       });
 
-      var zoomControl = new L.Control.Zoom({ position: 'topright' });
+      const zoomControl = new (L.ZoomControl || L.Control.Zoom)({ position: 'topright' });
 
-      var ggl = new L.Google('ROADMAP'); // Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
+      const ggl = new L.Google('ROADMAP'); // Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
 
-      var url = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      const url = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
         attr =
         'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
         otm = new L.TileLayer(url, {
@@ -53,17 +58,18 @@ _For a working example (without API Key) see [demo](https://raruto.github.io/exa
           /*subdomains:"1234"*/
         });
 
-      var baseLayers = {
+      const baseLayers = {
         "Google Map": ggl,
         "Leaflet Map": otm,
       };
 
-      var layersControl = L.control.layers(baseLayers, null, { collapsed:false });
+      const layersControl = new (L.LayersControl || L.Control.Layers)(baseLayers, null, { collapsed:false });
 
       layersControl.addTo(map);
       zoomControl.addTo(map);
 
       map.addLayer(ggl);
+    }
     </script>
     ```
 
@@ -71,7 +77,10 @@ _**NB** to be able to use the “pegman” (a.k.a. “Street View Control”) yo
 
 ---
 
-**Compatibile with:** leaflet@1.3.2, gmaps@3.34
+**Compatible with:**
+[![Leaflet 1.9.4](https://img.shields.io/badge/Leaflet-1.9.4-1EB300.svg?style=flat)](https://leafletjs.com/reference.html)
+[![Leaflet 2.0.0-beta.3](https://img.shields.io/badge/Leaflet-2.0.0--beta.3-1EB300.svg?style=flat)](https://leafletjs.com/reference.html)
+[![Google Maps JavaScript API v3](https://img.shields.io/badge/Google%20Maps%20JavaScript%20API-v3-1EB300.svg?style=flat)](https://developers.google.com/maps/documentation/javascript)
 
 ---
 

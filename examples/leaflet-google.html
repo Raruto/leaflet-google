@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<title>leaflet-google.js</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/Raruto/leaflet-google@master/leaflet-google.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key="></script>
+
+	<style>
+		html,
+		body,
+		#map {
+			height: 100%;
+			width: 100%;
+			padding: 0px;
+			margin: 0px;
+		}
+		.leaflet-control-layers {
+			background: #ffff00;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<div id="map"></div>
+
+	<script>
+		const map = new L.Map('map', {
+			center: [41.4583, 12.7059],
+			zoom: 5,
+			markerZoomAnimation: false,
+			zoomControl: false
+		});
+
+		const zoomControl = new L.Control.Zoom({ position: 'topright' });
+
+		const ggl = new L.Google('ROADMAP');
+
+		const url = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+			attr =
+			'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+			otm = new L.TileLayer(url, {
+				attribution: attr,
+				/*subdomains:"1234"*/
+			});
+
+		const baseLayers = {
+			"Google Map": ggl,
+			"Leaflet Map": otm,
+		};
+
+		const layersControl = L.control.layers(baseLayers, null, { collapsed:false });
+
+		layersControl.addTo(map);
+		zoomControl.addTo(map);
+
+		map.addLayer(ggl);
+	</script>
+
+	<a href="https://github.com/Raruto/leaflet-google" class="view-on-github" style="position: fixed;top: 10px;left: calc(50% - 60px);z-index: 9999;" > <img alt="View on Github" src="https://raruto.github.io/img/view-on-github.png" title="View on Github" width="163"> </a>
+
+</body>
+</html>
