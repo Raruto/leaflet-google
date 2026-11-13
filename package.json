@@ -1,6 +1,6 @@
 {
   "name": "leaflet-google",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "LeafletJS plugin that integrates with the Google Maps API",
   "main": "leaflet-google.js",
   "scripts": {
